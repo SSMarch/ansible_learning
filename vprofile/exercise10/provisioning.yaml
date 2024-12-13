@@ -1,0 +1,42 @@
+---
+- name: Provisioning servers
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update repository on Ubuntu
+      apt:
+        update_cache: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Install chrony on Ubuntu
+      apt:
+        name: chrony
+        state: present
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Update repository on CentOS
+      yum:
+        name: "*"
+        state: latest
+      when: ansible_distribution == "CentOS"
+
+    - name: Install chrony on CentOS
+      yum:
+        name: chrony
+        state: present
+      when: ansible_distribution == "CentOS"
+
+    - name: Start chrony service on Ubuntu
+      service:
+        name: chrony
+        state: started
+        enabled: yes
+      when: ansible_distribution == "Ubuntu"
+
+    - name: Start chrony service on CentOS
+      service:
+        name: chronyd
+        state: started
+        enabled: yes
+      when: ansible_distribution == "CentOS"
+
